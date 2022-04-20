@@ -7,7 +7,7 @@ silver2～silver8で実行してください．
 ```
 $ conda env create -n b3kadai -f=b3kadai.yaml
 $ conda acivate b3kadai
-$ pip install pytorch cudatoolkit=11.3 -c pytorch
+$ pip3 install torch --extra-index-url https://download.pytorch.org/whl/cu113
 ```
 
 ## 実行
