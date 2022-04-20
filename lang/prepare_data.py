@@ -46,8 +46,8 @@ df = pd.DataFrame(dict(id=ids, topic=topics, status=statuss,
     neu=label_neus, dont_care=label_dont_cares, text=texts))
 
 # CSVファイルとPickleの出力
-df.to_csv('data.csv')
-df.to_pickle('data.df.pickle')
+df.to_csv('data/data.csv')
+df.to_pickle('data/data.df.pickle')
 
 # Mecab Tagger の準備
 jumandic_dir = "/autofs/diamond2/share/users/fujie/share/mecab-jumandic-7.0-20130310"
@@ -99,6 +99,6 @@ feature_df = pd.DataFrame(feature_array, columns=columns)
 # 元の DataFrame と特徴量のDataFrameを結合
 df_all = pd.concat([df, feature_df], axis=1)
 
-# 書き出し
+# 書き出し（CSVは時間がかかりすぎるので廃止）
 # df_all.to_csv('extracted_features_32k.csv')
-df_all.to_pickle('extracted_features_32k.df.pkl')
+df_all.to_pickle('data/extracted_features_32k.df.pkl')

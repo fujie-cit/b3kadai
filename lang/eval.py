@@ -9,9 +9,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import copy
 
 # データの準備
-# df = pd.read_pickle('extracted_features.df.pkl')
-df = pd.read_pickle('extracted_features_32k.df.pkl')
-# df = pd.read_pickle('extracted_features_100k.df.pkl')
+df = pd.read_pickle('data/extracted_features_32k.df.pkl')
 
 # トピックを Xperia (10000) に限定する
 df = df[df['topic'] == 10000]
@@ -107,7 +105,7 @@ y_dim = 3
 model = Model(x_dim, y_dim).to(device)
 
 # モデルパラメタの読み込み
-model_params = torch.load("model_params.pth")
+model_params = torch.load("data/model_params.pth")
 model.load_state_dict(model_params)
 
 model.eval()
@@ -145,6 +143,6 @@ pred_index = pd.MultiIndex.from_tuples(list(zip(['pred'] * 4, labels_ef + ['tota
 df_conf = pd.DataFrame(cf_mat, index=target_index, columns=pred_index)
 print(df_conf)
 
-df_preds = pd.DataFrame(dict(pred=preds), index=df_test.index)
-df_test_preds = pd.concat([df_test, df_preds], axis=1)
-df_test_preds[['label', 'pred', 'text']].to_csv('result_100k.csv')
+# df_preds = pd.DataFrame(dict(pred=preds), index=df_test.index)
+# df_test_preds = pd.concat([df_test, df_preds], axis=1)
+# df_test_preds[['label', 'pred', 'text']].to_csv('result_100k.csv')

@@ -9,9 +9,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import copy
 
 # データの準備
-# df = pd.read_pickle('extracted_features.df.pkl')
-df = pd.read_pickle('extracted_features_32k.df.pkl')
-# df = pd.read_pickle('extracted_features_100k.df.pkl')
+df = pd.read_pickle('data/extracted_features_32k.df.pkl')
 
 # トピックを Xperia (10000) に限定する
 df = df[df['topic'] == 10000]
@@ -191,39 +189,9 @@ for epoch in range(epochs):
     log['vali_loss'].append(vali_loss)
     log['vali_acc'].append(vali_acc)
 
-pd.DataFrame(log).to_csv('train_log.csv')
+pd.DataFrame(log).to_csv('data/train_log.csv')
 
 model.load_state_dict(best_model_params)
 
 # モデルパラメータをファイルに保存
-torch.save(model.state_dict(), "model_params.pth")
-
-# model.eval()
-
-# test_dataloader = DataLoader(data_test, batch_size=4000, shuffle=False)
-
-# for x, t in test_dataloader:
-#     x, t = x.to(device), t.to(device)
-#     loss, preds = vali_step(x, t)
-#     tgts = t.tolist()
-#     preds = preds.argmax(axis=1).tolist()
-
-# labels = ['POS', 'NEG', 'OTH']
-# labels_ef = ['POS', 'NEG', 'OTH']
-# tgts_lbl = np.array(labels)[tgts]
-# preds_lbl = np.array(labels_ef)[preds]
-
-# print("data count {}".format(len(tgts_lbl)))
-# print(classification_report(tgts_lbl, preds_lbl, labels=labels_ef))
-
-# cf_mat = confusion_matrix(tgts_lbl, preds_lbl, labels=labels_ef)
-# cf_mat = np.concatenate([cf_mat, cf_mat.sum(axis=1, keepdims=True)], axis=1)
-# cf_mat = np.concatenate([cf_mat, cf_mat.sum(axis=0, keepdims=True)], axis=0)
-# target_index = pd.MultiIndex.from_tuples(list(zip(['target'] * 4, labels_ef + ['total'])))
-# pred_index = pd.MultiIndex.from_tuples(list(zip(['pred'] * 4, labels_ef + ['total'])))
-# df_conf = pd.DataFrame(cf_mat, index=target_index, columns=pred_index)
-# print(df_conf)
-
-# df_preds = pd.DataFrame(dict(pred=preds), index=df_test.index)
-# df_test_preds = pd.concat([df_test, df_preds], axis=1)
-# df_test_preds[['label', 'pred', 'text']].to_csv('result_100k.csv')
+torch.save(model.state_dict(), "data/model_params.pth")
