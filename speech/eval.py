@@ -10,7 +10,7 @@ import copy
 import sys
 
 # データの準備
-df = pd.read_pickle('data.df.pkl')
+df = pd.read_pickle('data/data.df.pkl')
 
 # 被験者ごとに取り出して正規化（平均をひき，標準偏差で割る）を実行
 for subject in df['subject'].unique().tolist():
@@ -113,7 +113,7 @@ def vali_step(x, t):
     return loss, preds
 
 # モデルパラメタの読み込み
-model_params = torch.load("model_params.pth")
+model_params = torch.load("data/model_params.pth")
 model.load_state_dict(model_params)
 
 model.eval()

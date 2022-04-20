@@ -5,27 +5,35 @@ import glob
 import os
 import tqdm
 
+###  STEP 1. openSMILE で特徴抽出を行う
+# openSMILEの初期化
 smile = opensmile.Smile(feature_set=opensmile.FeatureSet.ComParE_2016,
     feature_level=opensmile.FeatureLevel.Functionals)
 
-wavfile_list = glob.glob('/autofs/diamond/share/corpus/OGVC/Vol2/Acted/wav/*/*/*.wav')
+# 音声ファイルのフルパスのリスト
+wavfile_list = glob.glob(
+    '/autofs/diamond/share/corpus/OGVC/Vol2/Acted/wav/*/*/*.wav')
 
-name_list = []
-features_list = []
+name_list = []      # ファイル名（の拡張子を除いたもの）のリスト
+features_list = []  # 特徴抽出結果（numpy array）のリスト
+
+# 音声ファイルで繰り返し
 for wavfile_path in tqdm.tqdm(wavfile_list):
+    # ファイル名から拡張子を除いたものを抽出してname_listに追加
     wavfile_basename = os.path.basename(wavfile_path)
     wavfile_body, _ = os.path.splitext(wavfile_basename)
     name_list.append(wavfile_body)
+    # 音声ファイルからopenSMILEで特徴抽出してfeatures_listに追加    
     features = smile.process_file(wavfile_path)
     features_list.append(features.to_numpy())
+
+# 特徴量のDataFrameとファイル名のDataFrameを作成，結合して1つにまとめる
 column_names = features.columns
 df_features = pd.DataFrame(np.concatenate(features_list), columns=column_names)
 df_names = pd.DataFrame(name_list, columns=["name"])
 df = pd.concat([df_names, df_features], axis=1)
 
-# openSMILEで書き出されたデータをDataFrame化
-# df = pd.read_csv('extracted_features.csv', sep=';')
-
+### STEP 2. ファイル名から必要な情報を抜き出して整理し直す
 # name（ファイル名の拡張子を抜いた部分相当）のリストを取得
 names = df['name'].tolist()
 # 特徴量の部分を取得
@@ -49,6 +57,6 @@ df_out = pd.concat([
 ], axis=1)
 
 # CSVとpickleに出力
-df_out.to_csv('data.csv')
-df_out.to_pickle('data.df.pkl')
+df_out.to_csv('data/data.csv')
+df_out.to_pickle('data/data.df.pkl')
 

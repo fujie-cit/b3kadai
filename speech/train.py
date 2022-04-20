@@ -10,7 +10,7 @@ import copy
 import sys
 
 # データの準備
-df = pd.read_pickle('data.df.pkl')
+df = pd.read_pickle('data/data.df.pkl')
 
 # 被験者ごとに取り出して正規化（平均をひき，標準偏差で割る）を実行
 for subject in df['subject'].unique().tolist():
@@ -139,8 +139,8 @@ def vali_step(x, t):
 
     return loss, preds
 
-# エポックは最大50とする
-epochs = 50
+# エポックは最大100とする
+epochs = 100
 
 # 学習時にエポックごとの損失と正解率の記録するための辞書
 log = dict(epoch=[], train_loss=[], train_acc=[], vali_loss=[], vali_acc=[])
@@ -207,49 +207,10 @@ for epoch in range(epochs):
     log['vali_acc'].append(vali_acc)
 
 # 学習の記録をCSVファイルに出力
-pd.DataFrame(log).to_csv('train_log.csv')
+pd.DataFrame(log).to_csv('data/train_log.csv')
 
 # 最良の検証結果だったモデルパラメータを復元
 model.load_state_dict(best_model_params)
 
 # モデルパラメータをファイルに保存
-torch.save(model.state_dict(), "model_params.pth")
-
-# model.eval()
-
-# # 評価データ用のDataLoader
-# test_dataloader = DataLoader(data_test, batch_size=1000, shuffle=False)
-
-# # 評価を行う
-# for x, t in test_dataloader:
-#     x, t = x.to(device), t.to(device)
-#     loss, preds = vali_step(x, t)
-#     tgts = t.tolist()
-#     preds = preds.argmax(axis=1).tolist()
-
-# # フルラベルリスト（識別対象でないものも含む）と，有効ラベルリスト
-# # （カテゴリを絞り込んだ画像課題の名残り）
-# labels = emotion_list_with_neu
-# labels_ef = emotion_list_with_neu
-
-# # 正解ラベルと予測結果のカテゴリ名リスト（この両者を比較．同じ位置で一致していれば正解）
-# tgts_lbl = np.array(labels)[tgts]
-# preds_lbl = np.array(labels_ef)[preds]
-
-# # データ数を表示
-# print("data count {}".format(len(tgts_lbl)))
-
-# # 適合率，再現率，F-1値などを表示
-# print(classification_report(tgts_lbl, preds_lbl, labels=labels_ef))
-
-# # 混同行列を作成
-# cf_mat = confusion_matrix(tgts_lbl, preds_lbl, labels=labels_ef)
-# # 混同行列の行，列の合計値を求めて追加する
-# cf_mat = np.concatenate([cf_mat, cf_mat.sum(axis=1, keepdims=True)], axis=1)
-# cf_mat = np.concatenate([cf_mat, cf_mat.sum(axis=0, keepdims=True)], axis=0)
-# # target（正解）, pred（予測）が分かるようにマルチラベルをつけてDataFrame化する
-# target_index = pd.MultiIndex.from_tuples(list(zip(['target'] * 10, labels_ef + ['total'])))
-# pred_index = pd.MultiIndex.from_tuples(list(zip(['pred'] * 10, labels_ef + ['total'])))
-# df_conf = pd.DataFrame(cf_mat, index=target_index, columns=pred_index)
-# # 混同行列の表示
-# print(df_conf)
+torch.save(model.state_dict(), "data/model_params.pth")
