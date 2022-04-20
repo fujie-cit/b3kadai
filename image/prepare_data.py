@@ -1,7 +1,6 @@
 from imutils.face_utils.helpers import FACIAL_LANDMARKS_IDXS
 from numpy.core.fromnumeric import shape
 from numpy.lib.type_check import imag
-import predict_shape
 import glob
 from os import path
 import numpy as np
@@ -30,7 +29,8 @@ def make_subj_seq_emotion_list(topdir='/autofs/diamond/share/corpus/Cohn-Kanade/
             r[subj] = [(seq, emo)]
     return r
 
-def extract_shape(filename, shape_predictor=None, shape_predictor_path='shape_predictor_68_face_landmarks.dat'):
+def extract_shape(filename, shape_predictor=None, 
+    shape_predictor_path='/autofs/diamond2/share/users/fujie/share/shape_predictor_68_face_landmarks.dat'):
     """顔画像中の形状（68点のランドマーク）を検出して返す
 
     顔検出された数が1でない場合はNoneを返す．
@@ -70,14 +70,6 @@ def get_image_filenamelist(subj, seq, topdir='/autofs/diamond/share/corpus/Cohn-
     return filelist
 
 def run():
-    # 顔検出，ランドマーク検出に必要なデータファイルが無ければ，ダウンロードして展開する
-    if  not os.path.exists("shape_predictor_68_face_landmarks.dat") or \
-        os.path.getsize("shape_predictor_68_face_landmarks.dat") != 99693937:
-        if os.path.exists("shape_predictor_68_face_landmarks.dat.bz2"):
-            os.unlink("shape_predictor_68_face_landmarks.dat.bz2")
-        os.system("wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2")
-        os.system("bzip2 -d shape_predictor_68_face_landmarks.dat.bz2")
-
     # 被験者名をキーとして，系列名と感情のタプルのリストを値とする辞書を構築
     subj_seq_emo_list = make_subj_seq_emotion_list()
 
@@ -141,8 +133,8 @@ def run():
     df = pd.concat([df_info, df_shapes], axis=1)
 
     # 作成したDataFrameをCSVファイルとPickleで書き出す
-    df.to_csv('data.csv')
-    df.to_pickle('data.df.pkl')
+    df.to_csv('data/data.csv')
+    df.to_pickle('data/data.df.pkl')
 
 if __name__ == '__main__':
     run()

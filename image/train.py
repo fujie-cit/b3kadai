@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score
 import copy
 
 # データの準備
-df = pd.read_pickle('data.df.pkl')
+df = pd.read_pickle('data/data.df.pkl')
 
 # データ数の少ない軽蔑，恐怖，悲しみに該当する行を取り除く
 df = df[(df['emotion'] != 2) & (df['emotion'] != 4) & (df['emotion'] != 6)]
@@ -176,11 +176,11 @@ for epoch in range(epochs):
     log['vali_acc'].append(vali_acc)
 
 # 学習の記録をCSVファイルに出力
-pd.DataFrame(log).to_csv('train_log.csv')
+pd.DataFrame(log).to_csv('data/train_log.csv')
 
 # 最良の検証結果だったモデルパラメータを復元
 model.load_state_dict(best_model_params)
 
 # モデルパラメータをファイルに保存
-torch.save(model.state_dict(), "model_params.pth")
+torch.save(model.state_dict(), "data/model_params.pth")
 
